@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION pgsodium.create_mask_view(relid oid, subid integer, debug boolean = false)
+jREATE OR REPLACE FUNCTION pgsodium.create_mask_view(relid oid, subid integer, debug boolean = false)
     RETURNS void AS
   $$
 DECLARE
@@ -42,7 +42,7 @@ BEGIN
   FOR priv IN SELECT * FROM pg_catalog.aclexplode(privs) LOOP
 	body = format(
 	  $c$
-	  GRANT %s ON %I TO %s;
+	  GRANT %I ON %I TO %I;
 	  $c$,
 	  priv.privilege_type,
 	  rule.view_name,
