@@ -4,6 +4,8 @@ CREATE OR REPLACE FUNCTION pgsodium.create_mask_view(relid oid, subid integer, d
 DECLARE
   m record;
   body text;
+  func_str text;
+  trigger_str text;
   source_name text;
   view_owner regrole = quote_ident(session_user);
   rule pgsodium.masking_rule;
@@ -58,11 +60,21 @@ BEGIN
 	IF m.key_id IS NULL AND m.key_id_column is NULL THEN
 	  CONTINUE;
 	ELSE
+      func_str = format(
+        '%1$s_encrypt_secret_%2$s',
+		rule.relname,
+		m.attname
+      );
+      trigger_str = format(
+        '%1$s_encrypt_secret_trigger_%2$s',
+		rule.relname,
+		m.attname
+      );
 	  body = format(
 		$c$
-		DROP FUNCTION IF EXISTS %1$I."%2$I_encrypt_secret_%3$I"() CASCADE;
+		DROP FUNCTION IF EXISTS %1$I.%2$I() CASCADE;
 
-		CREATE OR REPLACE FUNCTION %1$I."%2$I_encrypt_secret_%3$I"()
+		CREATE OR REPLACE FUNCTION %1$I.%2$I()
 		  RETURNS TRIGGER
 		  LANGUAGE plpgsql
 		  AS $t$
@@ -72,18 +84,18 @@ BEGIN
 		END;
 		$t$;
 
-		ALTER FUNCTION  %1$I."%2$I_encrypt_secret_%3$I"() OWNER TO %5$s;
+		ALTER FUNCTION  %1$I.%2$I() OWNER TO %5$I;
 
-		DROP TRIGGER IF EXISTS "%2$I_encrypt_secret_trigger_%3$I" ON %6$s;
+		DROP TRIGGER IF EXISTS %3$I ON %6$I;
 
-		CREATE TRIGGER "%2$I_encrypt_secret_trigger_%3$I"
-		  BEFORE INSERT OR UPDATE OF "%3$I" ON %6$I
+		CREATE TRIGGER  %3$I
+		  BEFORE INSERT OR UPDATE OF %3$I ON %6$I
 		  FOR EACH ROW
-		  EXECUTE FUNCTION %1$s."%2$I_encrypt_secret_%3$I" ();
+		  EXECUTE FUNCTION %1$I.%2$I();
 		  $c$,
 		rule.relnamespace,
-		rule.relname,
-		m.attname,
+        func_str,
+        trigger_str,
 		pgsodium.encrypted_column(relid, m),
 		view_owner,
 		source_name
