@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+printf hello
 
 versions=${1:-14.19 15.14 16.10 17.6 18.0}
 
