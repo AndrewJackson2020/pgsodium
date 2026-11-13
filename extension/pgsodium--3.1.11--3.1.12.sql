@@ -60,9 +60,9 @@ BEGIN
 	ELSE
 	  body = format(
 		$c$
-		DROP FUNCTION IF EXISTS %1$s."%2$s_encrypt_secret_%3$s"() CASCADE;
+		DROP FUNCTION IF EXISTS %1$I."%2$I_encrypt_secret_%3$I"() CASCADE;
 
-		CREATE OR REPLACE FUNCTION %1$s."%2$s_encrypt_secret_%3$s"()
+		CREATE OR REPLACE FUNCTION %1$I."%2$I_encrypt_secret_%3$I"()
 		  RETURNS TRIGGER
 		  LANGUAGE plpgsql
 		  AS $t$
@@ -72,14 +72,14 @@ BEGIN
 		END;
 		$t$;
 
-		ALTER FUNCTION  %1$s."%2$s_encrypt_secret_%3$s"() OWNER TO %5$s;
+		ALTER FUNCTION  %1$I."%2$I_encrypt_secret_%3$I"() OWNER TO %5$s;
 
-		DROP TRIGGER IF EXISTS "%2$s_encrypt_secret_trigger_%3$s" ON %6$s;
+		DROP TRIGGER IF EXISTS "%2$I_encrypt_secret_trigger_%3$I" ON %6$s;
 
-		CREATE TRIGGER "%2$s_encrypt_secret_trigger_%3$s"
-		  BEFORE INSERT OR UPDATE OF "%3$s" ON %6$s
+		CREATE TRIGGER "%2$I_encrypt_secret_trigger_%3$I"
+		  BEFORE INSERT OR UPDATE OF "%3$I" ON %6$I
 		  FOR EACH ROW
-		  EXECUTE FUNCTION %1$s."%2$s_encrypt_secret_%3$s" ();
+		  EXECUTE FUNCTION %1$s."%2$I_encrypt_secret_%3$I" ();
 		  $c$,
 		rule.relnamespace,
 		rule.relname,
