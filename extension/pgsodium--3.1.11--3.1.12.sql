@@ -23,10 +23,10 @@ BEGIN
 
   body = format(
     $c$
-    DROP VIEW IF EXISTS %1$s;
-    CREATE VIEW %1$s %5$s AS SELECT %2$s
-    FROM %3$s;
-    ALTER VIEW %1$s OWNER TO %4$s;
+    DROP VIEW IF EXISTS %1$I;
+    CREATE VIEW %1$I %5$s AS SELECT %2$s
+    FROM %3$I;
+    ALTER VIEW %1$I OWNER TO %4$I;
     $c$,
     rule.view_name,
     pgsodium.decrypted_columns(relid),
