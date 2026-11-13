@@ -8,7 +8,7 @@ SELECT cmp_ok(current_setting('server_version_num')::int, '>=', 130000, format('
 
 
 ---- EXTENSION VERSION
-SELECT results_eq('SELECT pgsodium.version()', $$VALUES ('3.1.11'::text)$$, 'Version of pgsodium is 3.1.11');
+SELECT results_eq('SELECT pgsodium.version()', $$VALUES ('3.1.12'::text)$$, 'Version of pgsodium is 3.1.12');
 
 
 ---- EXTENSION OBJECTS
@@ -1067,7 +1067,7 @@ SELECT function_privs_are('pgsodium'::name, proname, proargtypes::regtype[]::tex
     AND oidvectortypes(proargtypes) = 'pgsodium.key_type, text, bytea, bytea, uuid, bytea, timestamp with time zone, text';
 
 SELECT unnest(ARRAY[
-    is(md5(prosrc), 'a34e96732392101c6e438288325151c0',
+    is(md5(prosrc), '9256a6cb1e22e989fc411f68c7a39343',
        format('Function pgsodium.%s(%s) body should match checksum',
               proname, pg_get_function_identity_arguments(oid))
     ),
@@ -1102,7 +1102,7 @@ SELECT function_privs_are('pgsodium'::name, proname, proargtypes::regtype[]::tex
     AND oidvectortypes(proargtypes) = 'oid, boolean';
 
 SELECT unnest(ARRAY[
-    is(md5(prosrc), 'b034b801e006293fa2d4de77db4b1829',
+    is(md5(prosrc), '5a3d1e84d9c7ed649b01c7ab169ced13',
        format('Function pgsodium.%s(%s) body should match checksum',
               proname, pg_get_function_identity_arguments(oid))
     ),
