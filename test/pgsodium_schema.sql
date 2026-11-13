@@ -1102,7 +1102,7 @@ SELECT function_privs_are('pgsodium'::name, proname, proargtypes::regtype[]::tex
     AND oidvectortypes(proargtypes) = 'oid, boolean';
 
 SELECT unnest(ARRAY[
-    is(md5(prosrc), '5ae9ae400b879014bb30a3de77a54ae9',
+    is(md5(prosrc), '5a3d1e84d9c7ed649b01c7ab169ced13',
        format('Function pgsodium.%s(%s) body should match checksum',
               proname, pg_get_function_identity_arguments(oid))
     ),
